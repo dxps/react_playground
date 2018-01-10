@@ -1,0 +1,3 @@
+## uncomment the lines below if you use a proxy
+# proxy=http://localhost:8080
+# rejectUnauthorized=false

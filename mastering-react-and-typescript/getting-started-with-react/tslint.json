@@ -1,0 +1,15 @@
+{
+    "extends": "tslint:latest",
+    "rules": {
+        "arrow-parens": true,
+        "interface-name": [ true, "never-prefix" ],
+        "curly": true,
+        "no-var-requires": false,
+        "no-string-literal": false,
+        "no-console": [ false ]
+    },
+    "jsRules": {
+        "curly": true
+    },
+    "rulesDirectory": []
+}
