@@ -102,8 +102,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js!../../node_modules/sass-loader/lib/loader.js!./styles.scss", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js!../../node_modules/sass-loader/lib/loader.js!./styles.scss");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/extract-text-webpack-plugin/dist/loader.js??ref--4-0!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js??ref--4-2!../../node_modules/sass-loader/lib/loader.js!./styles.scss", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/extract-text-webpack-plugin/dist/loader.js??ref--4-0!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js??ref--4-2!../../node_modules/sass-loader/lib/loader.js!./styles.scss");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -116,7 +116,7 @@ if(false) {
 /* 2 */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed: Error: No PostCSS Config found in: /files/dev/vision8tech/react-playground/mastering-react-and-typescript/getting-started-with-react/src/scss\n    at /files/dev/vision8tech/react-playground/mastering-react-and-typescript/getting-started-with-react/node_modules/postcss-load-config/index.js:51:26\n    at <anonymous>");
+throw new Error("Module build failed: ModuleBuildError: Module build failed: Error: Cannot find module 'postcss-smart-import'\n    at Function.Module._resolveFilename (module.js:555:15)\n    at Function.Module._load (module.js:482:25)\n    at Module.require (module.js:604:17)\n    at require (internal/module.js:11:18)\n    at Object.plugins (/files/dev/vision8tech/react-playground/mastering-react-and-typescript/getting-started-with-react/webpack.config.js:64:55)\n    at Object.parseOptions (/files/dev/vision8tech/react-playground/mastering-react-and-typescript/getting-started-with-react/node_modules/postcss-loader/lib/options.js:5:37)\n    at Promise.resolve.then (/files/dev/vision8tech/react-playground/mastering-react-and-typescript/getting-started-with-react/node_modules/postcss-loader/lib/index.js:68:27)\n    at <anonymous>\n    at runLoaders (/files/dev/vision8tech/react-playground/mastering-react-and-typescript/getting-started-with-react/node_modules/webpack/lib/NormalModule.js:195:19)\n    at /files/dev/vision8tech/react-playground/mastering-react-and-typescript/getting-started-with-react/node_modules/loader-runner/lib/LoaderRunner.js:364:11\n    at /files/dev/vision8tech/react-playground/mastering-react-and-typescript/getting-started-with-react/node_modules/loader-runner/lib/LoaderRunner.js:230:18\n    at context.callback (/files/dev/vision8tech/react-playground/mastering-react-and-typescript/getting-started-with-react/node_modules/loader-runner/lib/LoaderRunner.js:111:13)\n    at Promise.resolve.then.then.catch (/files/dev/vision8tech/react-playground/mastering-react-and-typescript/getting-started-with-react/node_modules/postcss-loader/lib/index.js:189:71)\n    at <anonymous>");
 
 /***/ }),
 /* 3 */

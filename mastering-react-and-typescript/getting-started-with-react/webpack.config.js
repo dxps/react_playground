@@ -1,4 +1,3 @@
-
 const path = require('path');
 
 const autoprefixer = require('autoprefixer');
@@ -8,6 +7,8 @@ const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const srcFolder = 'src';
 const distFolder = 'dist';
@@ -23,7 +24,7 @@ module.exports = {
             '.js', '.ts', '.tsx', '.json'
         ],
         //root: path.join(__dirname, srcFolder, 'ts')
-        modules: [ path.join(__dirname, srcFolder, 'ts') ]
+        modules: [path.join(__dirname, srcFolder, 'ts')]
     },
 
     module: {
@@ -50,6 +51,23 @@ module.exports = {
                 test: /\.scss$/,
                 exclude: [path.join(__dirname, srcFolder, 'scss')],
                 loaders: ['raw-loader', 'sass-loader']
+            }, {
+                test: /\.s?css$/,
+                exclude: /node_modules/,
+                use: ExtractTextPlugin.extract({
+                    use: [
+                        {
+                            loader: 'css-loader'
+                        }, {
+                            loader: 'postcss-loader',
+                            options: {
+                                plugins: (loader) => [require('postcss-smart-import'), require('autoprefixer')]
+                            }
+                        }, {
+                            loader: 'sass-loader'
+                        }
+                    ]
+                })
             }
 
         ]
@@ -58,17 +76,18 @@ module.exports = {
 
     // configuration for the postcss loader which modifies CSS after processing
     // autoprefixer plugin for postcss adds vendor specific prefixing for
-    // non-standard or experimental css properties
-    // postcss: [require('autoprefixer')],
+    // non-standard or experimental css properties postcss:
+    // [require('autoprefixer')],
 
     plugins: [
 
-        new webpack.LoaderOptionsPlugin({
-            options: {
-                context: __dirname,
-                postcss: [autoprefixer]
-            }
-        }),
+        // new webpack.LoaderOptionsPlugin({
+        //     options: {
+        //         context: __dirname,
+        //         postcss: [autoprefixer]
+        //     }
+        // }),
+        new ExtractTextPlugin('styles.css'),
 
         new webpack.ProvidePlugin({'Promise': 'es6-promose', 'fetch': 'import?this=>global!exports?global.fetch!whatwg-fetch'}),
 
