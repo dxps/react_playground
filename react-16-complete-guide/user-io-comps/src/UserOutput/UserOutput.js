@@ -3,10 +3,10 @@ import React from 'react';
 const userOutputStyle = {
     textAlign: 'left',
     margin: '20px',
-    padding: '2px 15px',
+    padding: '20px',
     border: '1px solid orange',
     borderRadius: '4px',
-    width: '40%'
+    width: '50%'
 }
 
 const userOutput = (props) => {
