@@ -10,7 +10,7 @@ class App extends Component {
   }
 
   valueChangeHandler = (value) => {
-    this.setState({value, valueLength: value.length});
+    this.setState({value});
   }
 
   charDeleteHandler = (idx) => {
