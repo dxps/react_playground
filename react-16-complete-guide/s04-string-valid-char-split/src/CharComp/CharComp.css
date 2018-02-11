@@ -1,0 +1,8 @@
+.charComp {
+    display: inline-block;
+    padding: 6px;
+    text-align: center;
+    margin: 8px;
+    border: 1px solid darkolivegreen;
+    border-radius: 30px;
+}
