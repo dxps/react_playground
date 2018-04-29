@@ -1,0 +1,17 @@
+
+.logo {
+  height: 150px;
+}
+
+.subtitle {
+  font-style: italic;
+  font-size: x-large;
+  color: coral;
+}
+
+.featuredHouse {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  background-color: rgb(255, 190, 166);
+}
