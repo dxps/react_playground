@@ -127,12 +127,16 @@ function Order({ openHour, closeHour }) {
 function Pizza({ pizzaObj }) {
   console.log("[Pizza] pizzaObj:", pizzaObj);
   return (
-    <li className="pizza">
+    <li className={`pizza ${pizzaObj.soldOut ? "sold-out" : ""}`}>
       <img src={pizzaObj.photoName} alt={pizzaObj.name} />
       <div>
         <h3>{pizzaObj.name}</h3>
         <p>{pizzaObj.ingredients}</p>
-        <span>{pizzaObj.price}</span>
+
+        {/* Left here just as another example (but the one below is better)
+          {pizzaObj.soldOut ? <span>sold out</span> : <span>{pizzaObj.price}</span> }
+        */}
+        <span>{pizzaObj.soldOut ? "sold out" : pizzaObj.price}</span>
       </div>
     </li>
   );
