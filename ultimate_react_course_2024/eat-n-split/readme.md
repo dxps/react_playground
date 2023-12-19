@@ -1,6 +1,6 @@
 # Eat 'n Split
 
-A React.js sample that uses
+A React.js sample that uses `useState` for managing the app state.
 
 <br/>
 
