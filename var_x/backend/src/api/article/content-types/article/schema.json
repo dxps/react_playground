@@ -1,0 +1,36 @@
+{
+  "kind": "singleType",
+  "collectionName": "articles",
+  "info": {
+    "singularName": "article",
+    "pluralName": "articles",
+    "displayName": "Article"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "maxLength": 60
+    },
+    "content": {
+      "type": "text",
+      "required": true,
+      "unique": true
+    },
+    "rating": {
+      "type": "integer",
+      "min": 1,
+      "max": 10
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "admin::user"
+    }
+  }
+}
