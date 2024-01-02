@@ -2,6 +2,14 @@
 
 _to-be-detailed_
 
+### Setup
+
+1. Start the PostgreSQL database.
+   1. Use, for example: `docker run --name var_x_strapi -p 5440:5432 -e POSTGRES_USER=var_x -e POSTGRES_PASSWORD=var_x -e POSTGRES_DB=var_x -d postgres:14`
+2. Use Node v18.
+   1. Install [nvm](https://github.com/nvm-sh/nvm) and run `nvm use` while being in this `backend` folder.
+   2. At the time of this writing, it crashes using Node.js v20, see [this](https://github.com/strapi/strapi/issues/18084) issue.
+
 <br/>
 
 ---
