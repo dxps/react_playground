@@ -1,1 +1,7 @@
 node_modules
+
+package-lock.json
+
+## Explicitly included (by negating the exclusion).
+!.env
+
