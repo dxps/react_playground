@@ -1,6 +1,7 @@
 # Articles
 
-A minimal sample for managing articles and playing with reusable components.
+A minimal sample for managing articles and playing with reusable components.\
+Part of chapter 05. _Reusable Components_.
 
 <br/>
 
