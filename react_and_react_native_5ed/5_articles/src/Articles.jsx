@@ -1,4 +1,5 @@
-import './Articles.css'
+import AddArticle from './AddArticle'
+import ArticleList from './ArticleList'
 import React from 'react'
 
 const id = (function* () {
@@ -12,18 +13,20 @@ const id = (function* () {
 function Articles() {
 	const [articles, setArticles] = React.useState([
 		{
-			id: id.next(),
+			id: id.next().value,
 			title: 'Article 1',
-			summary: 'Article 1 Summary',
+			summary: 'A summary of the first article.',
 			display: 'none',
 		},
 		{
-			id: id.next(),
+			id: id.next().value,
 			title: 'Article 2',
-			summary: 'Article 2 Summary',
+			summary: 'The summary of the second article.',
 			display: 'none',
 		},
 	])
+
+	console.debug(articles)
 
 	const [title, setTitle] = React.useState('')
 	const [summary, setSummary] = React.useState('')
@@ -32,7 +35,7 @@ function Articles() {
 	const onChangeSummary = (e) => setSummary(e.target.value)
 
 	const onClickToggle = (id) => {
-		const newArticles = articles.map((i) => {
+		const articlesUpd = articles.map((i) => {
 			if (i.id === id) {
 				return {
 					...i,
@@ -41,7 +44,7 @@ function Articles() {
 			}
 			return i
 		})
-		setArticles(newArticles)
+		setArticles(articlesUpd)
 	}
 
 	const onClickAdd = () => {
@@ -65,44 +68,19 @@ function Articles() {
 
 	return (
 		<section>
-			<header>
-				<h1>Articles</h1>
-				<input
-					placeholder="Title"
-					value={title}
-					onChange={onChangeTitle}
-				/>
-				<input
-					placeholder="Summary"
-					value={summary}
-					onChange={onChangeSummary}
-				/>
-				<button onClick={onClickAdd}>Add</button>
-			</header>
-			<article>
-				<ul>
-					{articles.map((i) => (
-						<li key={i.id.value}>
-							<a
-								href={`#${i.id}`}
-								title="Toggle Summary"
-								onClick={() => onClickToggle(i.id)}
-							>
-								{i.title}
-							</a>
-							&nbsp;
-							<button
-								href={`#${i.id}`}
-								title="Remove"
-								onClick={() => onClickRemove(i.id)}
-							>
-								&#10007;
-							</button>
-							<p style={{ display: i.display }}>{i.summary}</p>
-						</li>
-					))}
-				</ul>
-			</article>
+			<h1>Articles</h1>
+			<AddArticle
+				title={title}
+				summary={summary}
+				onChangeTitle={onChangeTitle}
+				onChangeSummary={onChangeSummary}
+				onClickAdd={onClickAdd}
+			/>
+			<ArticleList
+				articles={articles}
+				onClickToggle={onClickToggle}
+				onClickRemove={onClickRemove}
+			/>
 		</section>
 	)
 }
