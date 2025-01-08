@@ -1,6 +1,7 @@
 import AddArticle from './AddArticle'
 import ArticleList from './ArticleList'
 import React from 'react'
+import './Articles.css'
 
 const id = (function* () {
 	let i = 1

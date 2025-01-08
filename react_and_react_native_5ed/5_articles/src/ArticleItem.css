@@ -1,0 +1,15 @@
+button {
+	background-color: transparent;
+	padding: 2px 6px;
+}
+
+button:hover {
+	color: orange;
+	border: 1px solid transparent;
+}
+
+.summary {
+	color: darkgray;
+	margin: 0;
+	padding: 0;
+}

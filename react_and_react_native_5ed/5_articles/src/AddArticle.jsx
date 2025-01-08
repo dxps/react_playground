@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import './AddArticle.css'
 
 function AddArticle({
 	title,
@@ -15,7 +16,9 @@ function AddArticle({
 				value={summary}
 				onChange={onChangeSummary}
 			/>
-			<button onClick={onClickAdd}>Add</button>
+			<button className="addBtn" onClick={onClickAdd}>
+				Add
+			</button>
 		</section>
 	)
 }

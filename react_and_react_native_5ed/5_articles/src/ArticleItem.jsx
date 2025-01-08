@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
+import './ArticleItem.css'
 
 function ArticleItem({ article, onClickRemove }) {
 	const [isOpen, setIsOpen] = useState(article.display !== 'none')
