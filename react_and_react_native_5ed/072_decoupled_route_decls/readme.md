@@ -1,13 +1,15 @@
-# Chapter 07 :: Hello Route
+# Chapter 07 :: Decoupled Route Declarations
 
-A minimal example of using the routing in a React.js app.
+This example shows how to decouple the route declarations, so that we won't end up with all the routes in one single space that may become difficult to maintain on the long run.
+
+> Each top-level feature of the app can define its own routes. This way, it's clear which routes belong to which feature.
 
 <br/>
 
 ## Usage
 
--   Run `npm install` to install the project dependencies.
--   Run `npm run dev` to run the project.
+-   Run `npm install` to install the dependencies
+-   Run `npm run dev` to run the project
 
 <br/>
 
@@ -15,7 +17,7 @@ A minimal example of using the routing in a React.js app.
 
 ## Project Creation Notes
 
-This project was created using `npm create vite@latest 071_hello_route -- --template react-ts`
+This project was created using `npm create vite@latest 072_decoupled_route_decls -- --template react-ts`
 
 This template (React + TypeScript + Vite) provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
