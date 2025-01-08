@@ -1,4 +1,4 @@
-# Articles
+# Chapter 05. Articles
 
 A minimal sample for managing articles and playing with reusable components.\
 Part of chapter 05. _Reusable Components_.
