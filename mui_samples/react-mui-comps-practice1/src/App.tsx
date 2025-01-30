@@ -10,8 +10,14 @@ interface MySpecialBoxProps {
 }
 const MySpecialBox = ({ label, children }: MySpecialBoxProps) => {
 	return (
-		<Box border={1} padding={2} sx={{ borderRadius: 2 }}>
-			label: {label}
+		<Box
+			border={1.4}
+			borderColor={'#777777'}
+			margin={2}
+			padding={2}
+			sx={{ borderRadius: 2 }}
+		>
+			<span style={{ paddingRight: 10 }}>label: {label}</span>
 			{children}
 		</Box>
 	)
