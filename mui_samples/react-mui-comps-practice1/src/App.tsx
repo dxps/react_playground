@@ -1,27 +1,9 @@
 // import { RouterProvider } from 'react-router-dom'
-import { Box, CssBaseline, ThemeProvider } from '@mui/material'
+import { CssBaseline, ThemeProvider } from '@mui/material'
 import './App.css'
 import theme from './theme'
 import Button from '@mui/material/Button'
-
-interface MySpecialBoxProps {
-	label: string
-	children: React.ReactNode
-}
-const MySpecialBox = ({ label, children }: MySpecialBoxProps) => {
-	return (
-		<Box
-			border={1.4}
-			borderColor={'#777777'}
-			margin={2}
-			padding={2}
-			sx={{ borderRadius: 2 }}
-		>
-			<span style={{ paddingRight: 10 }}>label: {label}</span>
-			{children}
-		</Box>
-	)
-}
+import MySpecialBox from './components/MySpecialBox'
 
 function App() {
 	return (
@@ -34,12 +16,26 @@ function App() {
 				</div>
 				<Button
 					// sx is used to apply one-off style.
-					sx={{ backgroundColor: 'purple' }}
+					sx={{
+						backgroundColor: 'purple',
+						borderColor: (theme) => theme.typography.h1.color,
+						borderRadius: '7px',
+						borderStyle: 'solid',
+						borderWidth: '0px',
+						boxShadow: 10,
+						// Two examples of using CSS selectors within `sx` (to override MUI styles).
+						'&:hover': {
+							bgcolor: 'orange',
+						},
+						'&.MuiButton-contained': {
+							bgcolor: 'gray',
+						},
+					}}
 					variant="contained"
 					disableElevation
 					onClick={() => console.log('Button clicked!')}
 				>
-					My Button
+					My Purple Button
 				</Button>
 				<MySpecialBox label="My Special Box">
 					<Button variant="contained">
