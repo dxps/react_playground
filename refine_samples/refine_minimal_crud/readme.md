@@ -4,6 +4,16 @@ A minimal CRUD sample based on [Refine](https://refine.dev/).
 
 <br/>
 
+## Usage
+
+First, install the project dependencies using `npm i`.
+
+Then, run `npm run dev` to start the development server.
+
+And go to http://localhost:5173 to use the Web UI.
+
+<br/>
+
 ## Project creation notes
 
 <div align="center" style="margin: 30px;">

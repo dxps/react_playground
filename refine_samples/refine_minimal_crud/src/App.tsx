@@ -20,7 +20,7 @@ import routerBindings, {
 import dataProvider from "@refinedev/simple-rest";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 import { authProvider } from "./authProvider";
-import { Header } from "./components/header";
+import { Header, HeaderTitle } from "./components/header";
 import { ColorModeContextProvider } from "./contexts/color-mode";
 import {
   BlogPostCreate,
@@ -88,7 +88,7 @@ function App() {
                         key="authenticated-inner"
                         fallback={<CatchAllNavigate to="/login" />}
                       >
-                        <ThemedLayoutV2 Header={Header}>
+                        <ThemedLayoutV2 Header={Header} Title={HeaderTitle}>
                           <Outlet />
                         </ThemedLayoutV2>
                       </Authenticated>

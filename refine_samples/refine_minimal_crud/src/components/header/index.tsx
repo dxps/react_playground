@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { useGetIdentity } from "@refinedev/core";
+import { Link, useGetIdentity } from "@refinedev/core";
 import { HamburgerMenu, RefineThemedLayoutV2HeaderProps } from "@refinedev/mui";
 import React, { useContext } from "react";
 import { ColorModeContext } from "../../contexts/color-mode";
@@ -25,7 +25,7 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
   const { data: user } = useGetIdentity<IUser>();
 
   return (
-    <AppBar position={sticky ? "sticky" : "relative"}>
+    <AppBar position={sticky ? "sticky" : "relative"} color="transparent" elevation={0} >
       <Toolbar>
         <Stack
           direction="row"
@@ -76,5 +76,21 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
         </Stack>
       </Toolbar>
     </AppBar>
+  );
+};
+
+export const HeaderTitle = () => {
+  return (
+    <Typography
+      sx={{
+        display: {
+          xs: "none",
+          sm: "inline-block",
+        },
+      }}
+      variant="subtitle2"
+    >
+      <Link to="/" style={{textDecoration: "none"}}>Refine Minimal CRUD</Link>
+    </Typography>
   );
 };
