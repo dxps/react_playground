@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useReducer } from 'react'
 import './App.css'
 import type { Todo } from './types'
+import { todosReducer } from './reducers/todoReducer'
 
 const defaultTodos: Todo[] = [
 	{
@@ -21,32 +22,34 @@ const defaultTodos: Todo[] = [
 ]
 
 function App() {
-	const [todos, setTodos] = useState(defaultTodos)
-	const [newTodo, setNewTodo] = useState<Todo>({
-		id: Date.now(),
-		title: '',
-		completed: false,
-	})
+	const [todos, dispatch] = useReducer(todosReducer, defaultTodos)
+	const [newTodoTitle, setNewTodoTitle] = useState('')
 
 	function handleAddTodo() {
-		setTodos([...todos, newTodo])
-		setNewTodo({ id: Date.now(), title: '', completed: false })
+		dispatch({
+			type: 'add',
+			payload: {
+				title: newTodoTitle,
+			},
+		})
+		setNewTodoTitle('')
 	}
 
 	return (
 		<>
 			<h1>Todos</h1>
 			<input
+				name="newTodoTitle"
 				placeholder="Add a todo"
-				value={newTodo.title}
-				onChange={(e) => {
-					setNewTodo((prev) => ({ ...prev, title: e.target.value }))
-				}}
+				value={newTodoTitle}
+				onChange={(e) => setNewTodoTitle(e.target.value)}
 			/>
 			<button onClick={handleAddTodo}>+</button>
 			<div className="card">
 				{todos.map((todo) => (
-					<p key={todo.id}>{todo.title}</p>
+					<p key={todo.id}>
+						{todo.id}. {todo.title}
+					</p>
 				))}
 			</div>
 			<p className="read-the-docs">_</p>
