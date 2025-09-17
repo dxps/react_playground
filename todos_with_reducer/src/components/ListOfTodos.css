@@ -1,0 +1,27 @@
+.todosList {
+	text-align: left;
+}
+
+.addTodoBtn {
+	background-color: transparent;
+	color: darkgreen;
+	font-size: 1.2em;
+	padding: 0.5em 0.3;
+	border: none;
+}
+.addTodoBtn:hover {
+	background-color: #1a1a1a;
+	color: green;
+}
+
+.removeTodoBtn {
+	background-color: transparent;
+	color: darkred;
+	border: none;
+	font-size: 1em;
+}
+
+.removeTodoBtn:hover {
+	background-color: #1a1a1a;
+	color: red;
+}
