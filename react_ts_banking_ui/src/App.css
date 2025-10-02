@@ -1,0 +1,43 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+.dashboard-scrollbar::-webkit-scrollbar {
+	width: 5px;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar-thumb {
+	background: transparent;
+	max-height: 40px;
+	border-radius: 10px;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar-thumb {
+	background: #800cc4;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar-thumb {
+	max-height: 40px;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar-track {
+	background: #ececec;
+	color: #101828;
+}
+
+.dashboard-scrollbar:hover::-webkit-scrollbar {
+	opacity: 1;
+}
+
+.scrollbar::-webkit-scrollbar {
+	width: 5px;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
