@@ -1,3 +1,20 @@
+# Next.js 15 Ecommerce
+
+This is a fullstack TypeScript project using Next.js 15.
+
+<br/>
+
+## Setup
+
+-   Run `npm install` to install the dependencies.
+-   Run `docker-compose up -d` to start the PostgreSQL server container that hosts the database.
+-   Run `npx prisma migrate deploy` to deploy the migrations to the database.
+-   Run `npm run dev` to start the development server (or use `./dev.sh` provided script).
+
+<br/>
+
+## Project creation notes
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
@@ -24,8 +41,8 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+-   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+-   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
