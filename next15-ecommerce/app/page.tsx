@@ -25,8 +25,8 @@ async function Products({ page }: { page: number }) {
 		orderBy: { name: 'asc' },
 	})
 
-	// Simulating a delay.
-	await new Promise((resolve) => setTimeout(resolve, 500))
+	// Simulating a delay (just to showcase the loading state that shows the skeleton effect).
+	// await new Promise((resolve) => setTimeout(resolve, 500))
 
 	return (
 		<>

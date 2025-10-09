@@ -8,7 +8,9 @@ This is a fullstack TypeScript project using Next.js 15.
 
 -   Run `npm install` to install the dependencies.
 -   Run `docker-compose up -d` to start the PostgreSQL server container that hosts the database.
--   Run `npx prisma migrate deploy` to deploy the migrations to the database.
+-   Run `npx prisma generate` to generate the Prisma client.
+-   Run `npx prisma migrate deploy` to deploy the migrations to (aka create the objects in) the database.
+-   Run `npm run seed` to populate the database with initial data (categories and products).
 -   Run `npm run dev` to start the development server (or use `./dev.sh` provided script).
 
 <br/>
