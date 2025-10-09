@@ -15,12 +15,14 @@ datasource db {
 }
 
 model Product {
-    id          String  @id @default(cuid())
+    id          String   @id @default(cuid())
     name        String
     description String?
+    price       Float
+    image       String?  @unique
+    slug        String   @unique
+    category    Category @relation(fields: [categoryId], references: [id])
     categoryId  String
-
-    category Category @relation(fields: [categoryId], references: [id])
 
     @@map("products")
 }
