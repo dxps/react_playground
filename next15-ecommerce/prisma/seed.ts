@@ -37,6 +37,7 @@ async function main() {
 			image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e',
 			categoryId: electronics.id,
 			slug: 'wireless-headphones',
+			inventory: 20,
 		},
 		{
 			id: '2',
@@ -47,6 +48,7 @@ async function main() {
 			image: 'https://images.unsplash.com/photo-1617043983671-adaadcaa2460',
 			categoryId: electronics.id,
 			slug: 'smart-watch',
+			inventory: 6,
 		},
 		{
 			id: '3',
@@ -57,6 +59,7 @@ async function main() {
 			image: 'https://images.unsplash.com/photo-1580234797602-22c37b2a6230',
 			categoryId: electronics.id,
 			slug: 'gaming-console',
+			inventory: 8,
 		},
 		{
 			id: '4',
@@ -67,6 +70,7 @@ async function main() {
 			image: 'https://plus.unsplash.com/premium_photo-1728681168863-2c62a62fbfda',
 			categoryId: electronics.id,
 			slug: 'smart-home-hub',
+			inventory: 10,
 		},
 		{
 			id: '5',
@@ -77,6 +81,7 @@ async function main() {
 			image: 'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb',
 			categoryId: electronics.id,
 			slug: 'wireless-earbuds',
+			inventory: 4,
 		},
 		{
 			id: '6',
@@ -86,6 +91,7 @@ async function main() {
 			image: 'https://images.unsplash.com/photo-1696086152513-c74dc1d4b135',
 			categoryId: clothing.id,
 			slug: 't-shirt',
+			inventory: 0,
 		},
 		{
 			id: '7',
@@ -95,6 +101,7 @@ async function main() {
 			image: 'https://images.unsplash.com/photo-1555763349-8eecb62a02b3',
 			categoryId: home.id,
 			slug: 'ceramic-mug',
+			inventory: 2,
 		},
 	]
 

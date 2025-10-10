@@ -78,10 +78,41 @@ export default async function ProductPage({
 								{product.category?.name}
 							</Badge>
 						</div>
+
 						<Separator className="mb-4" />
+
 						<div className="space-y-2">
 							<h2 className="font-medium">Description</h2>
 							<p>{product.description}</p>
+						</div>
+
+						<Separator className="mb-4" />
+
+						<div className="space-y-2">
+							<h2 className="font-medium">Availability</h2>
+							<div className="flex items-center gap-2">
+								{product.inventory > 0 ? (
+									<>
+										<Badge
+											variant="outline"
+											className="text-green-600 font-semibold"
+										>
+											In stock
+										</Badge>
+										<span className="text-xs text-gray-500">
+											({product.inventory} items
+											available)
+										</span>
+									</>
+								) : (
+									<Badge
+										variant="outline"
+										className="text-red-600 font-semibold"
+									>
+										Out of stock
+									</Badge>
+								)}
+							</div>
 						</div>
 					</div>
 				</CardContent>
