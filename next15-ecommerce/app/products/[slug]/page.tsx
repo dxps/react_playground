@@ -1,8 +1,10 @@
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { getProductBySlug } from '@/lib/actions'
 import { formatPrice /* sleep */ } from '@/lib/utils'
+import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 
@@ -112,6 +114,23 @@ export default async function ProductPage({
 										Out of stock
 									</Badge>
 								)}
+							</div>
+						</div>
+
+						<Separator className="my-4" />
+
+						<div>
+							<div className="relative">
+								<Button
+									disabled={product.inventory === 0}
+									size="sm"
+									className="w-full cursor-pointer"
+								>
+									<ShoppingCart className="mr-2 w-4 h-4" />
+									{product.inventory > 0
+										? 'Add to cart'
+										: 'Out of stock'}
+								</Button>
 							</div>
 						</div>
 					</div>
