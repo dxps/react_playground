@@ -47,7 +47,7 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
 	const totalPages = Math.ceil(totalProducts / pageSize)
 
 	return (
-		<main className="container mx-auto">
+		<main className="container mx-auto py-4">
 			<h1 className="text-3xl font-bold mb-6">Home</h1>
 
 			<Suspense
