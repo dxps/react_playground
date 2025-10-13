@@ -44,7 +44,7 @@ export default function RootLayout({
 				{children}
 				<footer className="py-4">
 					<div className="container mx-auto text-xs text-muted-foreground text-center">
-						&copy; {new Date().getFullYear()} Next 15 Ecommerce
+						&copy; {new Date().getFullYear()} Next.js 15 E-Commerce
 					</div>
 				</footer>
 			</body>

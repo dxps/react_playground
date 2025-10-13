@@ -12,6 +12,7 @@ import { prisma } from '@/lib/prisma'
 import { Suspense } from 'react'
 import ProductsSkeleton from './ProductsSkeleton'
 import { Breadcrumbs } from '@/components/breadcrumbs'
+import { sleep } from '@/lib/utils'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
@@ -26,8 +27,9 @@ async function Products({ page }: { page: number }) {
 		orderBy: { name: 'asc' },
 	})
 
-	// Simulating a delay (just to showcase the loading state that shows the skeleton effect).
-	// await new Promise((resolve) => setTimeout(resolve, 500))
+	// Simulating a delay, just to see the loading state,
+	// visually reflected in the page with the skeleton.
+	await sleep(1000)
 
 	return (
 		<>
