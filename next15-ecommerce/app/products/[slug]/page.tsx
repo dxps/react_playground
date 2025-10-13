@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { getProductBySlug } from '@/lib/actions'
-import { formatPrice /* sleep */ } from '@/lib/utils'
+import { formatPrice, sleep } from '@/lib/utils'
 import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
@@ -60,15 +60,15 @@ export default async function ProductPage({
 		},
 	]
 
-	// If you want to simulate a delay and have a bigger chance
-	// to see the loading state, visually reflected in the page with the skeleton.
-	// await sleep(2000)
+	// Simulating a delay, just to see the loading state,
+	// visually reflected in the page with the skeleton.
+	await sleep(2000)
 
 	return (
-		<main className="container mx-auto p-4">
+		<main className="container mx-auto py-4">
 			<Breadcrumbs items={breadcrumbs} />
-			<Card className="max-w-3xl mx-auto p-0 overflow-hidden">
-				<CardContent className="px-0 md:px-6 md:pl-0 grid grid-cols-1 md:grid-cols-2 gap-4 ">
+			<Card>
+				<CardContent className="px-0 md:p-6 md:pl-0 grid grid-cols-1 md:grid-cols-2 gap-4 ">
 					<div className="relative aspect-video md:aspect-square">
 						{product.image && (
 							<Image

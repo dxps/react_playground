@@ -13,7 +13,7 @@ interface BreadcrumbsProps {
 
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
 	return (
-		<Breadcrumb className="mb-6">
+		<Breadcrumb className="mb-6 flex items-center gap-2">
 			<BreadcrumbList>
 				<BreadcrumbItem>
 					<BreadcrumbLink href="/">
