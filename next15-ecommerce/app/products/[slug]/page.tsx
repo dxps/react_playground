@@ -1,3 +1,4 @@
+import { Breadcrumbs } from '@/components/breadcrumbs'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -46,12 +47,26 @@ export default async function ProductPage({
 		notFound()
 	}
 
+	const breadcrumbs = [
+		{ label: 'Products', href: '/' },
+		{
+			label: product.category?.name,
+			href: `/categories/${product.category?.slug}`,
+		},
+		{
+			label: product.name,
+			href: `/products/${product.slug}`,
+			active: true,
+		},
+	]
+
 	// If you want to simulate a delay and have a bigger chance
 	// to see the loading state, visually reflected in the page with the skeleton.
 	// await sleep(2000)
 
 	return (
 		<main className="container mx-auto p-4">
+			<Breadcrumbs items={breadcrumbs} />
 			<Card className="max-w-3xl mx-auto p-0 overflow-hidden">
 				<CardContent className="px-0 md:px-6 md:pl-0 grid grid-cols-1 md:grid-cols-2 gap-4 ">
 					<div className="relative aspect-video md:aspect-square">
