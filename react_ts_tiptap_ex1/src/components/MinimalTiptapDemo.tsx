@@ -25,7 +25,6 @@ export default function MinimalTiptapDemo() {
 					content={content}
 					onChange={setContent}
 					placeholder="Start typing your content here..."
-					className="min-h-[400px]"
 				/>
 			</div>
 		</div>
