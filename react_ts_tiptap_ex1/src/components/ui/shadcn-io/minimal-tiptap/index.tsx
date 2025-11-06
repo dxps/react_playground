@@ -5,7 +5,9 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Toggle } from '@/components/ui/toggle'
+import { ImageExtension } from '@/components/ui/tiptap/extensions/image'
+import { ImagePlaceholder } from '@/components/ui/tiptap/extensions/image-placeholder'
+import TextAlign from '@tiptap/extension-text-align'
 import {
 	Bold,
 	Italic,
@@ -20,8 +22,14 @@ import {
 	Minus,
 	Undo,
 	Redo,
+	Code2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { AlignmentTooolbar } from '../../tiptap/extensions/toolbar/alignment-toolbar'
+import { ToolbarProvider } from '../../tiptap/extensions/toolbar/toolbar-provider'
+import { TooltipProvider } from '../../tooltip'
+import { CodeBlockToolbar } from '../../tiptap/extensions/toolbar/code-block-toolbar'
+import { ImagePlaceholderToolbar } from '../../tiptap/extensions/toolbar/image-placeholder-toolbar'
 
 interface MinimalTiptapProps {
 	content?: string
@@ -50,6 +58,11 @@ function MinimalTiptap({
 					keepAttributes: false,
 				},
 			}),
+			ImageExtension,
+			ImagePlaceholder,
+			TextAlign.configure({
+				types: ['heading', 'paragraph'],
+			}),
 		],
 		content,
 		editable,
@@ -73,141 +86,191 @@ function MinimalTiptap({
 	return (
 		<div className={cn('border rounded-lg overflow-hidden', className)}>
 			<div className="border-b p-2 flex flex-wrap items-center gap-1">
-				<Button
-					size="sm"
-					variant="ghost"
-					onClick={() => editor.chain().focus().toggleBold().run()}
-					disabled={!editor.can().chain().focus().toggleBold().run()}
-				>
-					<Bold className="h-4 w-4" />
-				</Button>
+				<ToolbarProvider editor={editor}>
+					<TooltipProvider>
+						<Button
+							size="sm"
+							variant="ghost"
+							onClick={() =>
+								editor.chain().focus().toggleBold().run()
+							}
+							disabled={
+								!editor.can().chain().focus().toggleBold().run()
+							}
+						>
+							<Bold className="h-4 w-4" />
+						</Button>
 
-				<Button
-					size="sm"
-					variant="ghost"
-					onClick={() => editor.chain().focus().toggleItalic().run()}
-					disabled={
-						!editor.can().chain().focus().toggleItalic().run()
-					}
-				>
-					<Italic className="h-4 w-4" />
-				</Button>
+						<Button
+							size="sm"
+							variant="ghost"
+							onClick={() =>
+								editor.chain().focus().toggleItalic().run()
+							}
+							disabled={
+								!editor
+									.can()
+									.chain()
+									.focus()
+									.toggleItalic()
+									.run()
+							}
+						>
+							<Italic className="h-4 w-4" />
+						</Button>
 
-				<Button
-					size="sm"
-					variant="ghost"
-					onClick={() => editor.chain().focus().toggleStrike().run()}
-					disabled={
-						!editor.can().chain().focus().toggleStrike().run()
-					}
-				>
-					<Strikethrough className="h-4 w-4" />
-				</Button>
+						<Button
+							size="sm"
+							variant="ghost"
+							onClick={() =>
+								editor.chain().focus().toggleStrike().run()
+							}
+							disabled={
+								!editor
+									.can()
+									.chain()
+									.focus()
+									.toggleStrike()
+									.run()
+							}
+						>
+							<Strikethrough className="h-4 w-4" />
+						</Button>
 
-				<Button
-					size="sm"
-					variant="ghost"
-					onClick={() => editor.chain().focus().toggleCode().run()}
-					disabled={!editor.can().chain().focus().toggleCode().run()}
-				>
-					<Code className="h-4 w-4" />
-				</Button>
+						<Button
+							size="sm"
+							variant="ghost"
+							onClick={() =>
+								editor.chain().focus().toggleCode().run()
+							}
+							disabled={
+								!editor.can().chain().focus().toggleCode().run()
+							}
+						>
+							<Code2 className="h-4 w-4" />
+						</Button>
 
-				<Separator orientation="vertical" className="h-6" />
+						<CodeBlockToolbar />
 
-				<Button
-					size="sm"
-					variant="ghost"
-					onClick={() =>
-						editor.chain().focus().toggleHeading({ level: 1 }).run()
-					}
-				>
-					<Heading1 className="h-4 w-4" />
-				</Button>
+						<Separator orientation="vertical" className="h-6" />
 
-				<Button
-					size="sm"
-					variant="ghost"
-					onClick={() =>
-						editor.chain().focus().toggleHeading({ level: 2 }).run()
-					}
-				>
-					<Heading2 className="h-4 w-4" />
-				</Button>
+						<Button
+							size="sm"
+							variant="ghost"
+							onClick={() =>
+								editor
+									.chain()
+									.focus()
+									.toggleHeading({ level: 1 })
+									.run()
+							}
+						>
+							<Heading1 className="h-4 w-4" />
+						</Button>
 
-				<Button
-					size="sm"
-					variant="ghost"
-					onClick={() =>
-						editor.chain().focus().toggleHeading({ level: 3 }).run()
-					}
-				>
-					<Heading3 className="h-4 w-4" />
-				</Button>
+						<Button
+							size="sm"
+							variant="ghost"
+							onClick={() =>
+								editor
+									.chain()
+									.focus()
+									.toggleHeading({ level: 2 })
+									.run()
+							}
+						>
+							<Heading2 className="h-4 w-4" />
+						</Button>
 
-				<Separator orientation="vertical" className="h-6" />
+						<Button
+							size="sm"
+							variant="ghost"
+							onClick={() =>
+								editor
+									.chain()
+									.focus()
+									.toggleHeading({ level: 3 })
+									.run()
+							}
+						>
+							<Heading3 className="h-4 w-4" />
+						</Button>
 
-				<Button
-					size="sm"
-					variant="ghost"
-					onClick={() =>
-						editor.chain().focus().toggleBulletList().run()
-					}
-				>
-					<List className="h-4 w-4" />
-				</Button>
+						<Separator orientation="vertical" className="h-6" />
 
-				<Button
-					size="sm"
-					variant="ghost"
-					onClick={() =>
-						editor.chain().focus().toggleOrderedList().run()
-					}
-				>
-					<ListOrdered className="h-4 w-4" />
-				</Button>
+						<Button
+							size="sm"
+							variant="ghost"
+							onClick={() =>
+								editor.chain().focus().toggleBulletList().run()
+							}
+						>
+							<List className="h-4 w-4" />
+						</Button>
 
-				<Button
-					size="sm"
-					variant="ghost"
-					onClick={() =>
-						editor.chain().focus().toggleBlockquote().run()
-					}
-				>
-					<Quote className="h-4 w-4" />
-				</Button>
+						<Button
+							size="sm"
+							variant="ghost"
+							onClick={() =>
+								editor.chain().focus().toggleOrderedList().run()
+							}
+						>
+							<ListOrdered className="h-4 w-4" />
+						</Button>
 
-				<Separator orientation="vertical" className="h-6" />
+						<Button
+							size="sm"
+							variant="ghost"
+							onClick={() =>
+								editor.chain().focus().toggleBlockquote().run()
+							}
+						>
+							<Quote className="h-4 w-4" />
+						</Button>
 
-				<Button
-					size="sm"
-					variant="ghost"
-					onClick={() =>
-						editor.chain().focus().setHorizontalRule().run()
-					}
-				>
-					<Minus className="h-4 w-4" />
-				</Button>
+						<Separator orientation="vertical" className="h-6" />
 
-				<Separator orientation="vertical" className="h-6" />
+						<Button
+							size="sm"
+							variant="ghost"
+							onClick={() =>
+								editor.chain().focus().setHorizontalRule().run()
+							}
+						>
+							<Minus className="h-4 w-4" />
+						</Button>
 
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={() => editor.chain().focus().undo().run()}
-					disabled={!editor.can().chain().focus().undo().run()}
-				>
-					<Undo className="h-4 w-4" />
-				</Button>
+						<Separator orientation="vertical" className="h-6" />
 
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={() => editor.chain().focus().redo().run()}
-					disabled={!editor.can().chain().focus().redo().run()}
-				>
-					<Redo className="h-4 w-4" />
-				</Button>
+						<AlignmentTooolbar />
+
+						<Separator orientation="vertical" className="h-6" />
+
+						<ImagePlaceholderToolbar />
+
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => editor.chain().focus().undo().run()}
+							disabled={
+								!editor.can().chain().focus().undo().run()
+							}
+						>
+							<Undo className="h-4 w-4" />
+						</Button>
+
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => editor.chain().focus().redo().run()}
+							disabled={
+								!editor.can().chain().focus().redo().run()
+							}
+						>
+							<Redo className="h-4 w-4" />
+						</Button>
+					</TooltipProvider>
+				</ToolbarProvider>
 			</div>
 
 			<EditorContent editor={editor} placeholder={placeholder} />
