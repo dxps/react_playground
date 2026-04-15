@@ -36,7 +36,7 @@ const Popup: React.FC<DraggablePopupProps> = ({
 				y: e.clientY - startPos.current.y,
 			})
 		},
-		[isDragging]
+		[isDragging],
 	)
 
 	// Function to handle the end of a drag event.
