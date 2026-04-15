@@ -16,8 +16,6 @@ import {
 
 import { ThemedText } from '@/components/themed-text'
 import { ThemedView } from '@/components/themed-view'
-import { Colors } from '@/constants/theme'
-import { useColorScheme } from '@/hooks/use-color-scheme'
 
 type Service = {
 	id: string
@@ -68,6 +66,18 @@ const SERVICES: Service[] = [
 	},
 ]
 
+const SERVICES_COLORS = {
+	background: '#3A3B3A',
+	border: 'rgba(100, 96, 91, 0.52)',
+	closeDimmed: '#A5A19C',
+	dimmedText: '#C4BFB8',
+	foreground: '#E8E4DE',
+	modalBackground: '#555755',
+	resizeGrip: '#77736E',
+	shadow: '#000000',
+	tooltipBackground: 'rgba(20, 22, 22, 0.96)',
+}
+
 const grabCursorStyle = Platform.select({
 	web: { cursor: 'grab' } as unknown as ViewStyle,
 })
@@ -78,6 +88,18 @@ const resizeCursorStyle = Platform.select({
 
 const preventSelectionStyle = Platform.select({
 	web: { userSelect: 'none' } as unknown as ViewStyle,
+})
+
+const modalShadowStyle = Platform.select({
+	web: {
+		boxShadow: '0 24px 52px rgba(0, 0, 0, 0.62)',
+	} as unknown as ViewStyle,
+})
+
+const modalShadowBlurStyle = Platform.select({
+	web: {
+		filter: 'blur(18px)',
+	} as unknown as ViewStyle,
 })
 
 const MIN_MODAL_WIDTH = 280
@@ -114,18 +136,13 @@ function clearActiveTextSelection() {
 }
 
 export default function ServicesScreen() {
-	const colorScheme = useColorScheme() ?? 'light'
-	const colors = Colors[colorScheme]
 	const { height, width } = useWindowDimensions()
 	const [openModals, setOpenModals] = useState<OpenServiceModal[]>([])
 	const nextZIndex = useRef(1)
 
-	const borderColor =
-		colorScheme === 'dark'
-			? 'rgba(255,255,255,0.14)'
-			: 'rgba(17,24,28,0.12)'
-	const secondaryText = colorScheme === 'dark' ? '#AEB6BC' : '#5D6870'
-	const dimmedText = colorScheme === 'dark' ? '#6F777D' : '#9AA3AA'
+	const borderColor = SERVICES_COLORS.border
+	const secondaryText = SERVICES_COLORS.dimmedText
+	const dimmedText = SERVICES_COLORS.closeDimmed
 
 	const bringToFront = useCallback((key: string) => {
 		nextZIndex.current += 1
@@ -193,7 +210,12 @@ export default function ServicesScreen() {
 			<SafeAreaView style={styles.safeArea}>
 				<View style={styles.content}>
 					<View style={styles.heading}>
-						<ThemedText type="title">Services</ThemedText>
+						<ThemedText
+							type="title"
+							style={{ color: SERVICES_COLORS.foreground }}
+						>
+							Services
+						</ThemedText>
 						<ThemedText
 							style={[styles.intro, { color: secondaryText }]}
 						>
@@ -203,34 +225,39 @@ export default function ServicesScreen() {
 					</View>
 
 					<View style={styles.table} accessibilityRole="list">
-						<View
-							style={[
-								styles.row,
-								styles.headerRow,
-								{ borderBottomColor: borderColor },
-							]}
-						>
-							<ThemedText
-								style={[styles.headerCell, styles.nameCell]}
-							>
-								Name
-							</ThemedText>
-							<ThemedText
+							<View
 								style={[
-									styles.headerCell,
-									styles.descriptionCell,
+									styles.row,
+									styles.headerRow,
+									{ borderBottomColor: borderColor },
 								]}
 							>
-								Description
-							</ThemedText>
-						</View>
+								<ThemedText
+									style={[
+										styles.headerCell,
+										styles.nameCell,
+										{ color: secondaryText },
+									]}
+								>
+									Name
+								</ThemedText>
+								<ThemedText
+									style={[
+										styles.headerCell,
+										styles.descriptionCell,
+										{ color: secondaryText },
+									]}
+								>
+									Description
+								</ThemedText>
+							</View>
 
 							<ScrollView>
 								{SERVICES.map((service) => (
-								<Pressable
-									key={service.id}
-									accessibilityRole="button"
-									accessibilityLabel={`Open details for ${service.name}`}
+									<Pressable
+										key={service.id}
+										accessibilityRole="button"
+										accessibilityLabel={`Open details for ${service.name}`}
 										onPress={(event) =>
 											openService(service, event)
 										}
@@ -240,20 +267,27 @@ export default function ServicesScreen() {
 										{ borderBottomColor: borderColor },
 										pressed && styles.pressedRow,
 									]}
-								>
-									<ThemedText
-										style={[
-											styles.nameCell,
-											styles.serviceName,
-										]}
 									>
+										<ThemedText
+											style={[
+												styles.nameCell,
+												styles.serviceName,
+												{
+													color:
+														SERVICES_COLORS.foreground,
+												},
+											]}
+										>
 										{service.name}
 									</ThemedText>
-									<ThemedText
-										style={[
-											styles.descriptionCell,
-											{ color: secondaryText },
-										]}
+										<ThemedText
+											style={[
+												styles.descriptionCell,
+												{
+													color:
+														SERVICES_COLORS.foreground,
+												},
+											]}
 									>
 										{service.description}
 									</ThemedText>
@@ -265,13 +299,12 @@ export default function ServicesScreen() {
 
 				<View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
 					{openModals.map((modal) => (
-						<DraggableServiceModal
-							key={modal.key}
-							modal={modal}
-							colors={colors}
-							borderColor={borderColor}
-							dimmedText={dimmedText}
-							secondaryText={secondaryText}
+							<DraggableServiceModal
+								key={modal.key}
+								modal={modal}
+								borderColor={borderColor}
+								dimmedText={dimmedText}
+								secondaryText={secondaryText}
 							onActivate={bringToFront}
 							onClose={closeModal}
 						/>
@@ -284,7 +317,6 @@ export default function ServicesScreen() {
 
 function DraggableServiceModal({
 	modal,
-	colors,
 	borderColor,
 	dimmedText,
 	secondaryText,
@@ -292,7 +324,6 @@ function DraggableServiceModal({
 	onClose,
 }: {
 	modal: OpenServiceModal
-	colors: (typeof Colors)['light']
 	borderColor: string
 	dimmedText: string
 	secondaryText: string
@@ -426,20 +457,28 @@ function DraggableServiceModal({
 			pointerEvents="box-none"
 			style={[
 				styles.modal,
+				modalShadowStyle,
 				{
-					backgroundColor: colors.background,
 					borderColor,
-					shadowColor: colors.text,
+					shadowColor: SERVICES_COLORS.shadow,
 					height: size.height,
 					transform: pan.getTranslateTransform(),
 					width: size.width,
 					zIndex: modal.zIndex,
-				},
-			]}
-		>
-			<View
-				style={[
-					styles.modalBody,
+					},
+				]}
+			>
+				<View
+					pointerEvents="none"
+					style={[
+						styles.modalShadowLayer,
+						modalShadowBlurStyle,
+						{ borderRadius: styles.modal.borderRadius },
+					]}
+				/>
+				<View
+					style={[
+						styles.modalBody,
 					isInteracting && preventSelectionStyle,
 				]}
 			>
@@ -451,7 +490,10 @@ function DraggableServiceModal({
 						<ThemedText
 							selectable={false}
 							type="subtitle"
-							style={styles.modalTitle}
+								style={[
+									styles.modalTitle,
+									{ color: SERVICES_COLORS.foreground },
+								]}
 						>
 							{modal.service.name}
 						</ThemedText>
@@ -470,7 +512,7 @@ function DraggableServiceModal({
 								styles.closeButtonText,
 								{
 									color: isCloseHovered
-										? colors.text
+											? SERVICES_COLORS.foreground
 										: dimmedText,
 								},
 							]}
@@ -499,7 +541,13 @@ function DraggableServiceModal({
 						>
 							ID
 						</ThemedText>
-						<ThemedText selectable style={styles.detailValue}>
+							<ThemedText
+								selectable
+								style={[
+									styles.detailValue,
+									{ color: SERVICES_COLORS.foreground },
+								]}
+							>
 							{modal.service.id}
 						</ThemedText>
 					</View>
@@ -517,7 +565,13 @@ function DraggableServiceModal({
 						>
 							Description
 						</ThemedText>
-						<ThemedText selectable style={styles.detailValue}>
+							<ThemedText
+								selectable
+								style={[
+									styles.detailValue,
+									{ color: SERVICES_COLORS.foreground },
+								]}
+							>
 							{modal.service.description}
 						</ThemedText>
 					</View>
@@ -549,6 +603,7 @@ function DraggableServiceModal({
 
 const styles = StyleSheet.create({
 	screen: {
+		backgroundColor: SERVICES_COLORS.background,
 		flex: 1,
 	},
 	safeArea: {
@@ -605,15 +660,25 @@ const styles = StyleSheet.create({
 	},
 	modal: {
 		borderRadius: 8,
-		borderWidth: StyleSheet.hairlineWidth,
-		elevation: 8,
+		elevation: 18,
 		position: 'absolute',
-		shadowOffset: { width: 0, height: 12 },
-		shadowOpacity: 0.16,
-		shadowRadius: 18,
+		shadowOffset: { width: 0, height: 18 },
+		shadowOpacity: 0.34,
+		shadowRadius: 28,
+	},
+	modalShadowLayer: {
+		backgroundColor: 'rgba(0, 0, 0, 0.6)',
+		bottom: -10,
+		left: 8,
+		position: 'absolute',
+		right: 8,
+		top: 16,
 	},
 	modalBody: {
+		backgroundColor: SERVICES_COLORS.modalBackground,
+		borderColor: SERVICES_COLORS.border,
 		borderRadius: 8,
+		borderWidth: StyleSheet.hairlineWidth,
 		flex: 1,
 		overflow: 'hidden',
 	},
@@ -650,7 +715,7 @@ const styles = StyleSheet.create({
 		lineHeight: 20,
 	},
 	closeTooltip: {
-		backgroundColor: 'rgba(17, 24, 28, 0.94)',
+		backgroundColor: SERVICES_COLORS.tooltipBackground,
 		borderRadius: 4,
 		paddingHorizontal: 8,
 		paddingVertical: 4,
@@ -706,7 +771,7 @@ const styles = StyleSheet.create({
 		width: 15,
 	},
 	resizeHandleLine: {
-		backgroundColor: '#89929A',
+		backgroundColor: SERVICES_COLORS.resizeGrip,
 		borderRadius: 2,
 		height: 1.5,
 		opacity: 0.5,
