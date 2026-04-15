@@ -4,6 +4,7 @@ import {
 	PanResponder,
 	Platform,
 	Pressable,
+	ScrollView,
 	StyleSheet,
 	View,
 	useWindowDimensions,
@@ -361,7 +362,12 @@ export function DraggableModal({
 					</Pressable>
 				</View>
 
-				<View style={styles.modalContent}>{renderedChildren}</View>
+				<ScrollView
+					style={styles.modalContentScroller}
+					contentContainerStyle={styles.modalContent}
+				>
+					{renderedChildren}
+				</ScrollView>
 
 				<View
 					{...resizeResponder.panHandlers}
@@ -466,9 +472,12 @@ const styles = StyleSheet.create({
 		lineHeight: 14,
 	},
 	modalContent: {
-		flex: 1,
+		flexGrow: 1,
 		paddingHorizontal: 16,
 		paddingVertical: 8,
+	},
+	modalContentScroller: {
+		flex: 1,
 	},
 	resizeHandle: {
 		bottom: 0,
