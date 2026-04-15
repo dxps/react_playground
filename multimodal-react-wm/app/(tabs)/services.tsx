@@ -116,7 +116,7 @@ function clearActiveTextSelection() {
 export default function ServicesScreen() {
 	const colorScheme = useColorScheme() ?? 'light'
 	const colors = Colors[colorScheme]
-	const { width } = useWindowDimensions()
+	const { height, width } = useWindowDimensions()
 	const [openModals, setOpenModals] = useState<OpenServiceModal[]>([])
 	const nextZIndex = useRef(1)
 
@@ -143,7 +143,7 @@ export default function ServicesScreen() {
 	}, [])
 
 	const openService = useCallback(
-		(service: Service, index: number) => {
+		(service: Service, event: GestureResponderEvent) => {
 			nextZIndex.current += 1
 			setOpenModals((current) => {
 				const existing = current.find(
@@ -158,9 +158,21 @@ export default function ServicesScreen() {
 					)
 				}
 
-				const offset = current.length % 4
-				const x = Math.min(36 + offset * 28, Math.max(24, width - 340))
-				const y = 132 + ((index + current.length) % 5) * 28
+				const modalWidth = Math.min(
+					360,
+					Math.max(MIN_MODAL_WIDTH, width * 0.86),
+				)
+				const pointerOffset = 10
+				const x = clamp(
+					event.nativeEvent.pageX + pointerOffset,
+					VIEWPORT_MARGIN,
+					width - modalWidth - VIEWPORT_MARGIN,
+				)
+				const y = clamp(
+					event.nativeEvent.pageY + pointerOffset,
+					VIEWPORT_MARGIN,
+					height - INITIAL_MODAL_HEIGHT - VIEWPORT_MARGIN,
+				)
 
 				return [
 					...current,
@@ -173,7 +185,7 @@ export default function ServicesScreen() {
 				]
 			})
 		},
-		[width],
+		[height, width],
 	)
 
 	return (
@@ -213,13 +225,15 @@ export default function ServicesScreen() {
 							</ThemedText>
 						</View>
 
-						<ScrollView>
-							{SERVICES.map((service, index) => (
+							<ScrollView>
+								{SERVICES.map((service) => (
 								<Pressable
 									key={service.id}
 									accessibilityRole="button"
 									accessibilityLabel={`Open details for ${service.name}`}
-									onPress={() => openService(service, index)}
+										onPress={(event) =>
+											openService(service, event)
+										}
 									style={({ pressed }) => [
 										styles.row,
 										styles.serviceRow,
