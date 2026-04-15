@@ -266,7 +266,7 @@ export default function ServicesScreen() {
 					</View>
 				</View>
 
-				<View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+				<View style={[StyleSheet.absoluteFill, styles.modalLayer]}>
 					{openModals.map((modal) => (
 						<DraggableModal
 							key={modal.key}
@@ -379,6 +379,9 @@ const styles = StyleSheet.create({
 	},
 	table: {
 		flex: 1,
+	},
+	modalLayer: {
+		pointerEvents: 'box-none',
 	},
 	row: {
 		flexDirection: 'row',

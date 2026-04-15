@@ -80,6 +80,16 @@ const modalShadowBlurStyle = Platform.select({
 	} as unknown as ViewStyle,
 })
 
+const nativeModalShadowStyle = Platform.select({
+	default: {
+		elevation: 18,
+		shadowOffset: { width: 0, height: 18 },
+		shadowOpacity: 0.34,
+		shadowRadius: 28,
+	} as ViewStyle,
+	web: undefined,
+})
+
 export function clampToRange(value: number, min: number, max: number) {
 	return Math.max(min, Math.min(value, max))
 }
@@ -257,16 +267,18 @@ export function DraggableModal({
 					dragHandlers: panResponder.panHandlers,
 				})
 			: children
+	const nativeShadowColorStyle =
+		Platform.OS === 'web' ? undefined : { shadowColor: colors.shadow }
 
 	return (
 		<Animated.View
-			pointerEvents="box-none"
 			style={[
 				styles.modal,
 				modalShadowStyle,
+				nativeModalShadowStyle,
+				nativeShadowColorStyle,
 				{
 					height: size.height,
-					shadowColor: colors.shadow,
 					transform: pan.getTranslateTransform(),
 					width: size.width,
 					zIndex,
@@ -274,7 +286,6 @@ export function DraggableModal({
 			]}
 		>
 			<View
-				pointerEvents="none"
 				style={[
 					styles.modalShadowLayer,
 					modalShadowBlurStyle,
@@ -334,7 +345,6 @@ export function DraggableModal({
 						</ThemedText>
 						{isCloseHovered ? (
 							<View
-								pointerEvents="none"
 								style={[
 									styles.closeTooltip,
 									{
@@ -391,16 +401,14 @@ export function DraggableModal({
 const styles = StyleSheet.create({
 	modal: {
 		borderRadius: MODAL_RADIUS,
-		elevation: 18,
+		pointerEvents: 'box-none',
 		position: 'absolute',
-		shadowOffset: { width: 0, height: 18 },
-		shadowOpacity: 0.34,
-		shadowRadius: 28,
 	},
 	modalShadowLayer: {
 		backgroundColor: 'rgba(0, 0, 0, 0.6)',
 		bottom: -10,
 		left: 8,
+		pointerEvents: 'none',
 		position: 'absolute',
 		right: 8,
 		top: 16,
@@ -447,6 +455,7 @@ const styles = StyleSheet.create({
 		borderRadius: 4,
 		paddingHorizontal: 8,
 		paddingVertical: 4,
+		pointerEvents: 'none',
 		position: 'absolute',
 		right: 0,
 		top: 32,
