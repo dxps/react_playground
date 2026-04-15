@@ -1,19 +1,22 @@
 import React, { useCallback, useRef, useState } from 'react'
 import {
-	Animated,
-	PanResponder,
-	Platform,
 	Pressable,
-	SafeAreaView,
 	ScrollView,
 	StyleSheet,
 	View,
 	useWindowDimensions,
 	type GestureResponderEvent,
-	type PanResponderGestureState,
-	type ViewStyle,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
+import {
+	DRAGGABLE_MODAL_INITIAL_HEIGHT,
+	DRAGGABLE_MODAL_MIN_WIDTH,
+	DRAGGABLE_MODAL_VIEWPORT_MARGIN,
+	DraggableModal,
+	clampToRange,
+	type DraggableModalColors,
+} from '@/components/draggable-modal'
 import { ThemedText } from '@/components/themed-text'
 import { ThemedView } from '@/components/themed-view'
 
@@ -74,75 +77,29 @@ const SERVICES_COLORS = {
 	foreground: '#E8E4DE',
 	modalBackground: '#555755',
 	resizeGrip: '#77736E',
+	rowHoverBackground: 'rgba(255, 255, 255, 0.04)',
 	shadow: '#000000',
 	tooltipBackground: 'rgba(20, 22, 22, 0.96)',
 }
 
-const grabCursorStyle = Platform.select({
-	web: { cursor: 'grab' } as unknown as ViewStyle,
-})
-
-const resizeCursorStyle = Platform.select({
-	web: { cursor: 'nwse-resize' } as unknown as ViewStyle,
-})
-
-const preventSelectionStyle = Platform.select({
-	web: { userSelect: 'none' } as unknown as ViewStyle,
-})
-
-const modalShadowStyle = Platform.select({
-	web: {
-		boxShadow: '0 24px 52px rgba(0, 0, 0, 0.62)',
-	} as unknown as ViewStyle,
-})
-
-const modalShadowBlurStyle = Platform.select({
-	web: {
-		filter: 'blur(18px)',
-	} as unknown as ViewStyle,
-})
-
-const MIN_MODAL_WIDTH = 280
-const MIN_MODAL_HEIGHT = 180
-const INITIAL_MODAL_HEIGHT = 220
-const VIEWPORT_MARGIN = 16
-
-function clamp(value: number, min: number, max: number) {
-	return Math.max(min, Math.min(value, max))
-}
-
-function hasActiveTextSelection() {
-	if (Platform.OS !== 'web') {
-		return false
-	}
-
-	const windowWithSelection = globalThis as typeof globalThis & {
-		getSelection?: () => { toString: () => string } | null
-	}
-	const selectionText = windowWithSelection.getSelection?.()?.toString() ?? ''
-
-	return selectionText.length > 0
-}
-
-function clearActiveTextSelection() {
-	if (Platform.OS !== 'web') {
-		return
-	}
-
-	const windowWithSelection = globalThis as typeof globalThis & {
-		getSelection?: () => { removeAllRanges?: () => void } | null
-	}
-	windowWithSelection.getSelection?.()?.removeAllRanges?.()
+const DRAGGABLE_MODAL_COLORS: DraggableModalColors = {
+	background: SERVICES_COLORS.modalBackground,
+	border: SERVICES_COLORS.border,
+	closeDimmed: SERVICES_COLORS.closeDimmed,
+	foreground: SERVICES_COLORS.foreground,
+	resizeGrip: SERVICES_COLORS.resizeGrip,
+	shadow: SERVICES_COLORS.shadow,
+	tooltipBackground: SERVICES_COLORS.tooltipBackground,
 }
 
 export default function ServicesScreen() {
 	const { height, width } = useWindowDimensions()
+	const [hoveredServiceId, setHoveredServiceId] = useState<string | null>(null)
 	const [openModals, setOpenModals] = useState<OpenServiceModal[]>([])
 	const nextZIndex = useRef(1)
 
 	const borderColor = SERVICES_COLORS.border
 	const secondaryText = SERVICES_COLORS.dimmedText
-	const dimmedText = SERVICES_COLORS.closeDimmed
 
 	const bringToFront = useCallback((key: string) => {
 		nextZIndex.current += 1
@@ -177,18 +134,20 @@ export default function ServicesScreen() {
 
 				const modalWidth = Math.min(
 					360,
-					Math.max(MIN_MODAL_WIDTH, width * 0.86),
+					Math.max(DRAGGABLE_MODAL_MIN_WIDTH, width * 0.86),
 				)
 				const pointerOffset = 10
-				const x = clamp(
+				const x = clampToRange(
 					event.nativeEvent.pageX + pointerOffset,
-					VIEWPORT_MARGIN,
-					width - modalWidth - VIEWPORT_MARGIN,
+					DRAGGABLE_MODAL_VIEWPORT_MARGIN,
+					width - modalWidth - DRAGGABLE_MODAL_VIEWPORT_MARGIN,
 				)
-				const y = clamp(
+				const y = clampToRange(
 					event.nativeEvent.pageY + pointerOffset,
-					VIEWPORT_MARGIN,
-					height - INITIAL_MODAL_HEIGHT - VIEWPORT_MARGIN,
+					DRAGGABLE_MODAL_VIEWPORT_MARGIN,
+					height -
+						DRAGGABLE_MODAL_INITIAL_HEIGHT -
+						DRAGGABLE_MODAL_VIEWPORT_MARGIN,
 				)
 
 				return [
@@ -225,69 +184,79 @@ export default function ServicesScreen() {
 					</View>
 
 					<View style={styles.table} accessibilityRole="list">
-							<View
+						<View
+							style={[
+								styles.row,
+								styles.headerRow,
+								{ borderBottomColor: borderColor },
+							]}
+						>
+							<ThemedText
 								style={[
-									styles.row,
-									styles.headerRow,
-									{ borderBottomColor: borderColor },
+									styles.headerCell,
+									styles.nameCell,
+									{ color: secondaryText },
 								]}
 							>
-								<ThemedText
-									style={[
-										styles.headerCell,
-										styles.nameCell,
-										{ color: secondaryText },
-									]}
-								>
-									Name
-								</ThemedText>
-								<ThemedText
-									style={[
-										styles.headerCell,
-										styles.descriptionCell,
-										{ color: secondaryText },
-									]}
-								>
-									Description
-								</ThemedText>
-							</View>
+								name
+							</ThemedText>
+							<ThemedText
+								style={[
+									styles.headerCell,
+									styles.descriptionCell,
+									{ color: secondaryText },
+								]}
+							>
+								description
+							</ThemedText>
+						</View>
 
-							<ScrollView>
-								{SERVICES.map((service) => (
-									<Pressable
-										key={service.id}
-										accessibilityRole="button"
-										accessibilityLabel={`Open details for ${service.name}`}
-										onPress={(event) =>
-											openService(service, event)
-										}
+						<ScrollView>
+							{SERVICES.map((service) => (
+								<Pressable
+									key={service.id}
+									accessibilityRole="button"
+									accessibilityLabel={`Open details for ${service.name}`}
+									onHoverIn={() =>
+										setHoveredServiceId(service.id)
+									}
+									onHoverOut={() =>
+										setHoveredServiceId((current) =>
+											current === service.id
+												? null
+												: current,
+										)
+									}
+									onPress={(event) =>
+										openService(service, event)
+									}
 									style={({ pressed }) => [
 										styles.row,
 										styles.serviceRow,
 										{ borderBottomColor: borderColor },
+										hoveredServiceId === service.id &&
+											styles.hoveredRow,
 										pressed && styles.pressedRow,
 									]}
+								>
+									<ThemedText
+										style={[
+											styles.nameCell,
+											styles.serviceName,
+											{
+												color: SERVICES_COLORS.foreground,
+											},
+										]}
 									>
-										<ThemedText
-											style={[
-												styles.nameCell,
-												styles.serviceName,
-												{
-													color:
-														SERVICES_COLORS.foreground,
-												},
-											]}
-										>
 										{service.name}
 									</ThemedText>
-										<ThemedText
-											style={[
-												styles.descriptionCell,
-												{
-													color:
-														SERVICES_COLORS.foreground,
-												},
-											]}
+									<ThemedText
+										style={[
+											styles.descriptionCell,
+											{
+												color: SERVICES_COLORS.foreground,
+											},
+										]}
 									>
 										{service.description}
 									</ThemedText>
@@ -299,305 +268,92 @@ export default function ServicesScreen() {
 
 				<View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
 					{openModals.map((modal) => (
-							<DraggableServiceModal
-								key={modal.key}
-								modal={modal}
-								borderColor={borderColor}
-								dimmedText={dimmedText}
-								secondaryText={secondaryText}
+						<DraggableModal
+							key={modal.key}
+							colors={DRAGGABLE_MODAL_COLORS}
+							id={modal.key}
+							initialPosition={modal.initialPosition}
 							onActivate={bringToFront}
 							onClose={closeModal}
-						/>
+							title={modal.service.name}
+							zIndex={modal.zIndex}
+						>
+							{({ dragHandleStyle, dragHandlers }) => (
+								<>
+									<View
+										{...dragHandlers}
+										style={[
+											styles.modalContentDragZone,
+											dragHandleStyle,
+										]}
+									/>
+									<View style={styles.detailGroup}>
+										<ThemedText
+											selectable
+											style={[
+												styles.detailLabel,
+												{ color: secondaryText },
+											]}
+										>
+											ID
+										</ThemedText>
+										<ThemedText
+											selectable
+											style={[
+												styles.detailValue,
+												{
+													color: SERVICES_COLORS.foreground,
+												},
+											]}
+										>
+											{modal.service.id}
+										</ThemedText>
+									</View>
+									<View
+										{...dragHandlers}
+										style={[
+											styles.modalContentDragZone,
+											styles.modalContentGap,
+											dragHandleStyle,
+										]}
+									/>
+									<View style={styles.detailGroup}>
+										<ThemedText
+											selectable
+											style={[
+												styles.detailLabel,
+												{ color: secondaryText },
+											]}
+										>
+											Description
+										</ThemedText>
+										<ThemedText
+											selectable
+											style={[
+												styles.detailValue,
+												{
+													color: SERVICES_COLORS.foreground,
+												},
+											]}
+										>
+											{modal.service.description}
+										</ThemedText>
+									</View>
+									<View
+										{...dragHandlers}
+										style={[
+											styles.modalContentDragZone,
+											styles.modalContentBottomDragZone,
+											dragHandleStyle,
+										]}
+									/>
+								</>
+							)}
+						</DraggableModal>
 					))}
 				</View>
 			</SafeAreaView>
 		</ThemedView>
-	)
-}
-
-function DraggableServiceModal({
-	modal,
-	borderColor,
-	dimmedText,
-	secondaryText,
-	onActivate,
-	onClose,
-}: {
-	modal: OpenServiceModal
-	borderColor: string
-	dimmedText: string
-	secondaryText: string
-	onActivate: (key: string) => void
-	onClose: (key: string) => void
-}) {
-	const { height: viewportHeight, width: viewportWidth } = useWindowDimensions()
-	const pan = useRef(new Animated.ValueXY(modal.initialPosition)).current
-	const lastPosition = useRef(modal.initialPosition)
-	const initialSize = useRef({
-		height: INITIAL_MODAL_HEIGHT,
-		width: Math.min(360, Math.max(MIN_MODAL_WIDTH, viewportWidth * 0.86)),
-	}).current
-	const [size, setSize] = useState(initialSize)
-	const [isInteracting, setIsInteracting] = useState(false)
-	const [isCloseHovered, setIsCloseHovered] = useState(false)
-	const sizeRef = useRef(initialSize)
-	const resizeStartSize = useRef(initialSize)
-	const shouldStartDrag = (
-		_event: GestureResponderEvent,
-		gesture: PanResponderGestureState,
-	) =>
-		!hasActiveTextSelection() &&
-		Math.abs(gesture.dx) + Math.abs(gesture.dy) > 2
-
-	const updateSize = useCallback((nextSize: typeof initialSize) => {
-		sizeRef.current = nextSize
-		setSize(nextSize)
-	}, [])
-
-	const panResponder = useRef(
-		PanResponder.create({
-			onStartShouldSetPanResponder: () => {
-				onActivate(modal.key)
-				return false
-			},
-			onStartShouldSetPanResponderCapture: () => false,
-			onMoveShouldSetPanResponder: shouldStartDrag,
-			onMoveShouldSetPanResponderCapture: shouldStartDrag,
-			onPanResponderTerminationRequest: () => false,
-			onPanResponderGrant: () => {
-				onActivate(modal.key)
-				clearActiveTextSelection()
-				setIsInteracting(true)
-				pan.setOffset(lastPosition.current)
-				pan.setValue({ x: 0, y: 0 })
-			},
-			onPanResponderMove: Animated.event(
-				[null, { dx: pan.x, dy: pan.y }],
-				{
-					useNativeDriver: false,
-				},
-			),
-			onPanResponderRelease: (
-				_event: GestureResponderEvent,
-				gesture: PanResponderGestureState,
-			) => {
-				lastPosition.current = {
-					x: lastPosition.current.x + gesture.dx,
-					y: lastPosition.current.y + gesture.dy,
-				}
-				pan.flattenOffset()
-				setIsInteracting(false)
-			},
-			onPanResponderTerminate: (
-				_event: GestureResponderEvent,
-				gesture: PanResponderGestureState,
-			) => {
-				lastPosition.current = {
-					x: lastPosition.current.x + gesture.dx,
-					y: lastPosition.current.y + gesture.dy,
-				}
-				pan.flattenOffset()
-				setIsInteracting(false)
-			},
-			onShouldBlockNativeResponder: () => true,
-		}),
-	).current
-
-	const resizeResponder = useRef(
-		PanResponder.create({
-			onStartShouldSetPanResponder: () => true,
-			onStartShouldSetPanResponderCapture: () => true,
-			onMoveShouldSetPanResponder: () => true,
-			onMoveShouldSetPanResponderCapture: () => true,
-			onPanResponderGrant: () => {
-				onActivate(modal.key)
-				clearActiveTextSelection()
-				setIsInteracting(true)
-				resizeStartSize.current = sizeRef.current
-			},
-			onPanResponderMove: (
-				_event: GestureResponderEvent,
-				gesture: PanResponderGestureState,
-			) => {
-				const maxWidth = Math.max(
-					MIN_MODAL_WIDTH,
-					viewportWidth - lastPosition.current.x - VIEWPORT_MARGIN,
-				)
-				const maxHeight = Math.max(
-					MIN_MODAL_HEIGHT,
-					viewportHeight - lastPosition.current.y - VIEWPORT_MARGIN,
-				)
-
-				updateSize({
-					height: clamp(
-						resizeStartSize.current.height + gesture.dy,
-						MIN_MODAL_HEIGHT,
-						maxHeight,
-					),
-					width: clamp(
-						resizeStartSize.current.width + gesture.dx,
-						MIN_MODAL_WIDTH,
-						maxWidth,
-					),
-				})
-			},
-			onPanResponderRelease: () => {
-				setIsInteracting(false)
-			},
-			onPanResponderTerminate: () => {
-				setIsInteracting(false)
-			},
-			onPanResponderTerminationRequest: () => false,
-			onShouldBlockNativeResponder: () => true,
-		}),
-	).current
-
-	return (
-		<Animated.View
-			pointerEvents="box-none"
-			style={[
-				styles.modal,
-				modalShadowStyle,
-				{
-					borderColor,
-					shadowColor: SERVICES_COLORS.shadow,
-					height: size.height,
-					transform: pan.getTranslateTransform(),
-					width: size.width,
-					zIndex: modal.zIndex,
-					},
-				]}
-			>
-				<View
-					pointerEvents="none"
-					style={[
-						styles.modalShadowLayer,
-						modalShadowBlurStyle,
-						{ borderRadius: styles.modal.borderRadius },
-					]}
-				/>
-				<View
-					style={[
-						styles.modalBody,
-					isInteracting && preventSelectionStyle,
-				]}
-			>
-				<View
-					{...panResponder.panHandlers}
-					style={[styles.modalHeader, grabCursorStyle]}
-				>
-					<View style={styles.modalDragArea}>
-						<ThemedText
-							selectable={false}
-							type="subtitle"
-								style={[
-									styles.modalTitle,
-									{ color: SERVICES_COLORS.foreground },
-								]}
-						>
-							{modal.service.name}
-						</ThemedText>
-					</View>
-					<Pressable
-						accessibilityRole="button"
-						accessibilityLabel={`Close ${modal.service.name} details`}
-						hitSlop={10}
-						onHoverIn={() => setIsCloseHovered(true)}
-						onHoverOut={() => setIsCloseHovered(false)}
-						onPress={() => onClose(modal.key)}
-						style={styles.closeButton}
-					>
-						<ThemedText
-							style={[
-								styles.closeButtonText,
-								{
-									color: isCloseHovered
-											? SERVICES_COLORS.foreground
-										: dimmedText,
-								},
-							]}
-						>
-							x
-						</ThemedText>
-						{isCloseHovered ? (
-							<View pointerEvents="none" style={styles.closeTooltip}>
-								<ThemedText style={styles.closeTooltipText}>
-									Close
-								</ThemedText>
-							</View>
-						) : null}
-					</Pressable>
-				</View>
-
-				<View style={styles.modalContent}>
-					<View {...panResponder.panHandlers} style={[styles.modalContentDragZone, grabCursorStyle]} />
-					<View style={styles.detailGroup}>
-						<ThemedText
-							selectable
-							style={[
-								styles.detailLabel,
-								{ color: secondaryText },
-							]}
-						>
-							ID
-						</ThemedText>
-							<ThemedText
-								selectable
-								style={[
-									styles.detailValue,
-									{ color: SERVICES_COLORS.foreground },
-								]}
-							>
-							{modal.service.id}
-						</ThemedText>
-					</View>
-					<View
-						{...panResponder.panHandlers}
-						style={[styles.modalContentDragZone, styles.modalContentGap, grabCursorStyle]}
-					/>
-					<View style={styles.detailGroup}>
-						<ThemedText
-							selectable
-							style={[
-								styles.detailLabel,
-								{ color: secondaryText },
-							]}
-						>
-							Description
-						</ThemedText>
-							<ThemedText
-								selectable
-								style={[
-									styles.detailValue,
-									{ color: SERVICES_COLORS.foreground },
-								]}
-							>
-							{modal.service.description}
-						</ThemedText>
-					</View>
-					<View
-						{...panResponder.panHandlers}
-						style={[
-							styles.modalContentDragZone,
-							styles.modalContentBottomDragZone,
-							grabCursorStyle,
-						]}
-					/>
-				</View>
-				<View
-					{...resizeResponder.panHandlers}
-					accessibilityLabel={`Resize ${modal.service.name} details`}
-					accessibilityRole="adjustable"
-					style={[styles.resizeHandle, resizeCursorStyle]}
-				>
-					<View style={styles.resizeHandleMark}>
-						<View style={[styles.resizeHandleLine, styles.resizeHandleLineOuter]} />
-						<View style={[styles.resizeHandleLine, styles.resizeHandleLineMiddle]} />
-						<View style={[styles.resizeHandleLine, styles.resizeHandleLineInner]} />
-					</View>
-				</View>
-			</View>
-		</Animated.View>
 	)
 }
 
@@ -635,8 +391,10 @@ const styles = StyleSheet.create({
 	serviceRow: {
 		alignItems: 'flex-start',
 		borderBottomWidth: StyleSheet.hairlineWidth,
-		minHeight: 76,
-		paddingVertical: 16,
+		paddingVertical: 10,
+	},
+	hoveredRow: {
+		backgroundColor: SERVICES_COLORS.rowHoverBackground,
 	},
 	pressedRow: {
 		opacity: 0.72,
@@ -645,7 +403,7 @@ const styles = StyleSheet.create({
 		fontSize: 13,
 		fontWeight: '700',
 		letterSpacing: 0,
-		textTransform: 'uppercase',
+		// textTransform: 'uppercase',
 	},
 	nameCell: {
 		flexBasis: 170,
@@ -657,81 +415,6 @@ const styles = StyleSheet.create({
 	},
 	serviceName: {
 		fontWeight: '700',
-	},
-	modal: {
-		borderRadius: 8,
-		elevation: 18,
-		position: 'absolute',
-		shadowOffset: { width: 0, height: 18 },
-		shadowOpacity: 0.34,
-		shadowRadius: 28,
-	},
-	modalShadowLayer: {
-		backgroundColor: 'rgba(0, 0, 0, 0.6)',
-		bottom: -10,
-		left: 8,
-		position: 'absolute',
-		right: 8,
-		top: 16,
-	},
-	modalBody: {
-		backgroundColor: SERVICES_COLORS.modalBackground,
-		borderColor: SERVICES_COLORS.border,
-		borderRadius: 8,
-		borderWidth: StyleSheet.hairlineWidth,
-		flex: 1,
-		overflow: 'hidden',
-	},
-	modalHeader: {
-		alignItems: 'center',
-		flexDirection: 'row',
-		gap: 10,
-		minHeight: 32,
-		paddingLeft: 12,
-		paddingRight: 4,
-		paddingVertical: 4,
-	},
-	modalDragArea: {
-		flex: 1,
-		justifyContent: 'center',
-		minHeight: 26,
-	},
-	modalTitle: {
-		flex: 1,
-		fontSize: 18,
-	},
-	closeButton: {
-		alignItems: 'center',
-		borderRadius: 8,
-		height: 30,
-		justifyContent: 'center',
-		position: 'relative',
-		transform: [{ translateY: -2 }],
-		width: 30,
-		zIndex: 2,
-	},
-	closeButtonText: {
-		fontSize: 18,
-		lineHeight: 20,
-	},
-	closeTooltip: {
-		backgroundColor: SERVICES_COLORS.tooltipBackground,
-		borderRadius: 4,
-		paddingHorizontal: 8,
-		paddingVertical: 4,
-		position: 'absolute',
-		right: 0,
-		top: 32,
-	},
-	closeTooltipText: {
-		color: '#FFFFFF',
-		fontSize: 12,
-		lineHeight: 14,
-	},
-	modalContent: {
-		flex: 1,
-		paddingHorizontal: 16,
-		paddingVertical: 8,
 	},
 	modalContentDragZone: {
 		minHeight: 12,
@@ -754,43 +437,5 @@ const styles = StyleSheet.create({
 	},
 	detailValue: {
 		lineHeight: 22,
-	},
-	resizeHandle: {
-		bottom: 0,
-		height: 30,
-		position: 'absolute',
-		right: 0,
-		width: 30,
-	},
-	resizeHandleMark: {
-		bottom: 2,
-		height: 15,
-		overflow: 'hidden',
-		position: 'absolute',
-		right: 2,
-		width: 15,
-	},
-	resizeHandleLine: {
-		backgroundColor: SERVICES_COLORS.resizeGrip,
-		borderRadius: 2,
-		height: 1.5,
-		opacity: 0.5,
-		position: 'absolute',
-		transform: [{ rotate: '-45deg' }],
-	},
-	resizeHandleLineOuter: {
-		bottom: -2,
-		right: -11,
-		width: 27,
-	},
-	resizeHandleLineMiddle: {
-		bottom: 2,
-		right: -7,
-		width: 23,
-	},
-	resizeHandleLineInner: {
-		bottom: 6,
-		right: -4,
-		width: 19,
 	},
 })
